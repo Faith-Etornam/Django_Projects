@@ -33,12 +33,12 @@ class Order(models.Model):
  
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(choices=PAYMENT_STATUS, max_length=1, default=PAYMENT_PENDING)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 class OrderItem(models.Model):
-    quantity = models.IntegerField(max_length=255)
+    quantity = models.IntegerField()
     unit_price = models.DecimalField(max_digits=5, decimal_places=2)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey('Product', on_delete=models.PROTECT )
 
 
@@ -52,8 +52,9 @@ class Collection(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField()
     description = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
@@ -63,7 +64,9 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.C)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField()
+
 
 
 
